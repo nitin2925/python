@@ -17,7 +17,7 @@ def lambda_handler(event, context):
 
     for snapshot in response['Snapshots']:
         snapshot_id = snapshot['SnapshotId']
-        volume_id = snapshot.get('VolumeID')
+        volume_id = snapshot.get('VolumeId')
 
         if not volume_id:
             #delete the snapshot if it is not attached to any volume
@@ -27,7 +27,7 @@ def lambda_handler(event, context):
             #check if the volume still exist
             try:
                 volume_response = ec2.describe_volumes(VolumeIds=[volume_id])
-                if not volume_response['Volumes'][0]['Attachmenta']:
+                if not volume_response['Volumes'][0]['Attachments']:
                     ec2.delete_snapshot(SnapshotId=snapshot_id)
             except ec2.exceptions.ClientError as e:
                 if e.response['Error']['Code'] == 'InvalidVolume.NotFound':
